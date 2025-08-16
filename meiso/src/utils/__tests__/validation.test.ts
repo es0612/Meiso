@@ -73,3 +73,36 @@ if (typeof window === 'undefined') {
 }
 
 export { runTests };
+
+// Jest tests
+describe('Data Model Validation', () => {
+  it('should validate meditation scripts', () => {
+    INITIAL_MEDITATION_SCRIPTS.forEach((script) => {
+      expect(() => MeditationScriptSchema.parse(script)).not.toThrow();
+    });
+  });
+
+  it('should generate unique IDs', () => {
+    const id1 = generateId();
+    const id2 = generateId();
+    expect(id1).not.toBe(id2);
+    expect(id1.length).toBeGreaterThan(0);
+  });
+
+  it('should create meditation sessions correctly', () => {
+    const session = createMeditationSession('basic-breathing', 'test-user');
+    expect(session.scriptId).toBe('basic-breathing');
+    expect(session.userId).toBe('test-user');
+    expect(session.completed).toBe(false);
+    expect(session.duration).toBe(0);
+  });
+
+  it('should complete meditation sessions correctly', () => {
+    const session = createMeditationSession('basic-breathing', 'test-user');
+    const completedSession = completeMeditationSession(session, 60, 5, 'Great session!');
+    expect(completedSession.completed).toBe(true);
+    expect(completedSession.duration).toBe(60);
+    expect(completedSession.rating).toBe(5);
+    expect(completedSession.notes).toBe('Great session!');
+  });
+});

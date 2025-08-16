@@ -16,7 +16,7 @@ export function createMeditationSession(
     userId,
     scriptId,
     startTime: now,
-    endTime: now, // 開始時は同じ時刻、完了時に更新
+    endTime: undefined, // 開始時は未設定、完了時に設定
     completed: false,
     duration: 0,
     deviceInfo: getDeviceInfo(),
@@ -48,6 +48,9 @@ export function completeMeditationSession(
  * セッションの実際の継続時間を計算（秒）
  */
 export function calculateSessionDuration(session: MeditationSession): number {
+  if (!session.endTime) {
+    return 0;
+  }
   return Math.floor(
     (session.endTime.getTime() - session.startTime.getTime()) / 1000
   );

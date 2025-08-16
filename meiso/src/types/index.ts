@@ -25,7 +25,7 @@ export interface MeditationSession {
   userId?: string; // 匿名ユーザーの場合はnull
   scriptId: string;
   startTime: Date;
-  endTime: Date;
+  endTime?: Date;
   completed: boolean;
   duration: number; // 実際の継続時間（秒）
   rating?: number; // 1-5星評価

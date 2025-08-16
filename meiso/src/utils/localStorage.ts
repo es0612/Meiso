@@ -64,6 +64,16 @@ export function removeFromLocalStorage(key: string): boolean {
   }
 }
 
+// Raw data type for localStorage (with string dates)
+type RawLocalStorageData = {
+  sessions: Array<Omit<MeditationSession, 'startTime' | 'endTime'> & {
+    startTime: string;
+    endTime?: string;
+  }>;
+  preferences: UserPreferences;
+  lastSyncAt?: string;
+};
+
 // 瞑想データ全体を取得
 export function getMeditationData(): LocalStorageData {
   const defaultData: LocalStorageData = {
@@ -71,25 +81,23 @@ export function getMeditationData(): LocalStorageData {
     preferences: DEFAULT_USER_PREFERENCES,
   };
 
-  const rawData = getFromLocalStorage(
+  const rawData = getFromLocalStorage<RawLocalStorageData>(
     STORAGE_KEYS.MEDITATION_DATA,
-    defaultData
+    {
+      sessions: [],
+      preferences: DEFAULT_USER_PREFERENCES,
+    }
   );
 
-  // Zodスキーマで検証
   try {
     // 日付文字列をDateオブジェクトに変換
-    const processedData = {
+    const processedData: LocalStorageData = {
       ...rawData,
-      sessions: rawData.sessions.map(
-        (
-          session: MeditationSession & { startTime: string; endTime: string }
-        ) => ({
-          ...session,
-          startTime: new Date(session.startTime),
-          endTime: new Date(session.endTime),
-        })
-      ),
+      sessions: rawData.sessions.map(session => ({
+        ...session,
+        startTime: new Date(session.startTime),
+        endTime: session.endTime ? new Date(session.endTime) : undefined,
+      })),
       lastSyncAt: rawData.lastSyncAt ? new Date(rawData.lastSyncAt) : undefined,
     };
 
@@ -111,7 +119,7 @@ export function saveMeditationData(data: LocalStorageData): boolean {
     sessions: data.sessions.map(session => ({
       ...session,
       startTime: session.startTime.toISOString(),
-      endTime: session.endTime.toISOString(),
+      endTime: session.endTime?.toISOString(),
     })),
     lastSyncAt: data.lastSyncAt?.toISOString(),
   };
@@ -275,15 +283,11 @@ export function importMeditationData(jsonData: string): boolean {
 
     // 日付文字列をDateオブジェクトに変換
     const processedData: LocalStorageData = {
-      sessions: data.sessions.map(
-        (
-          session: MeditationSession & { startTime: string; endTime: string }
-        ) => ({
-          ...session,
-          startTime: new Date(session.startTime),
-          endTime: new Date(session.endTime),
-        })
-      ),
+      sessions: data.sessions.map((session: RawLocalStorageData['sessions'][0]) => ({
+        ...session,
+        startTime: new Date(session.startTime),
+        endTime: session.endTime ? new Date(session.endTime) : undefined,
+      })),
       preferences: data.preferences || DEFAULT_USER_PREFERENCES,
       lastSyncAt: data.lastSyncAt ? new Date(data.lastSyncAt) : undefined,
     };
