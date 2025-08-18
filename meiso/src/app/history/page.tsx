@@ -1,44 +1,85 @@
+'use client';
+
+import { useState } from 'react';
+import { MeditationSession } from '@/types';
+import { MeditationHistory, MeditationCalendar, SessionDetailModal } from '@/components/meditation';
+import { useMeditationHistory } from '@/hooks/useMeditationHistory';
+
 export default function HistoryPage() {
+  const [selectedSession, setSelectedSession] = useState<MeditationSession | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+  const { updateSession, deleteSession } = useMeditationHistory();
+
+  const handleSessionClick = (session: MeditationSession) => {
+    setSelectedSession(session);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedSession(null);
+  };
+
+  const handleDateClick = (date: Date, sessions: MeditationSession[]) => {
+    if (sessions.length === 1) {
+      handleSessionClick(sessions[0]);
+    } else if (sessions.length > 1) {
+      // 複数セッションがある場合は最新のものを表示
+      const latestSession = sessions.sort((a, b) => 
+        b.startTime.getTime() - a.startTime.getTime()
+      )[0];
+      handleSessionClick(latestSession);
+    }
+  };
+
   return (
     <div className="flex-1 px-4 py-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
-          瞑想履歴
-        </h1>
-        
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              総セッション数
-            </h3>
-            <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">0</p>
-          </div>
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            瞑想履歴
+          </h1>
           
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              連続日数
-            </h3>
-            <p className="text-3xl font-bold text-green-600 dark:text-green-400">0</p>
-          </div>
-          
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              総時間
-            </h3>
-            <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">0分</p>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                viewMode === 'list' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              }`}
+            >
+              リスト表示
+            </button>
+            <button
+              onClick={() => setViewMode('calendar')}
+              className={`px-4 py-2 text-sm rounded-lg transition-colors ${
+                viewMode === 'calendar' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              }`}
+            >
+              カレンダー表示
+            </button>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-              最近のセッション
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 text-center py-8">
-              まだ瞑想セッションがありません。最初の瞑想を始めてみましょう！
-            </p>
-          </div>
-        </div>
+        {viewMode === 'list' ? (
+          <MeditationHistory onSessionClick={handleSessionClick} />
+        ) : (
+          <MeditationCalendar 
+            onDateClick={handleDateClick}
+          />
+        )}
+
+        <SessionDetailModal
+          session={selectedSession}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          onUpdate={updateSession}
+          onDelete={deleteSession}
+        />
       </div>
     </div>
   );

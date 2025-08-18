@@ -271,6 +271,36 @@ export function exportMeditationData(): string {
   return JSON.stringify(data, null, 2);
 }
 
+// セッションを更新
+export function updateMeditationSession(sessionId: string, updates: Partial<MeditationSession>): boolean {
+  const data = getMeditationData();
+  const sessionIndex = data.sessions.findIndex(s => s.id === sessionId);
+  
+  if (sessionIndex === -1) {
+    return false;
+  }
+
+  data.sessions[sessionIndex] = {
+    ...data.sessions[sessionIndex],
+    ...updates
+  };
+
+  return saveMeditationData(data);
+}
+
+// セッションを削除
+export function deleteMeditationSession(sessionId: string): boolean {
+  const data = getMeditationData();
+  const originalLength = data.sessions.length;
+  data.sessions = data.sessions.filter(s => s.id !== sessionId);
+  
+  if (data.sessions.length === originalLength) {
+    return false; // セッションが見つからなかった
+  }
+
+  return saveMeditationData(data);
+}
+
 // データのインポート
 export function importMeditationData(jsonData: string): boolean {
   try {

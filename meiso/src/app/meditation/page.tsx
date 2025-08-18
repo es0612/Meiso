@@ -1,9 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { ScriptSelector } from '@/components/meditation';
+import { useState, useEffect } from 'react';
+import { ScriptSelector, MeditationSessionController } from '@/components/meditation';
+import { AnonymousUserPrompt } from '@/components/auth';
 import { useMeditationScripts } from '@/hooks/useMeditationScripts';
-import { MeditationScript } from '@/types';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { addMeditationSession, calculateStatistics } from '@/utils/localStorage';
+import { MeditationScript, MeditationSession } from '@/types';
 
 export default function MeditationPage() {
   const {
@@ -15,7 +19,22 @@ export default function MeditationPage() {
     error,
   } = useMeditationScripts();
 
+  const { user, isAnonymous } = useAuthContext();
+  const { profile, updateStatistics } = useUserProfile();
+
   const [showScriptSelector, setShowScriptSelector] = useState(true);
+  const [volume, setVolume] = useState(0.7);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const [sessionCount, setSessionCount] = useState(0);
+
+  // Load user preferences and session count
+  useEffect(() => {
+    if (profile) {
+      setVolume(profile.preferences.volume);
+      setAudioEnabled(profile.preferences.audioEnabled);
+      setSessionCount(profile.statistics.totalSessions);
+    }
+  }, [profile]);
 
   const handleScriptChange = (scriptId: string) => {
     setSelectedScript(scriptId);
@@ -29,13 +48,39 @@ export default function MeditationPage() {
   const handleStartMeditation = () => {
     if (selectedScriptData) {
       setShowScriptSelector(false);
-      // TODO: 瞑想タイマーコンポーネントを表示する（次のタスクで実装）
-      console.log('Starting meditation with script:', selectedScriptData.title);
     }
   };
 
   const handleBackToSelection = () => {
     setShowScriptSelector(true);
+  };
+
+  const handleSessionComplete = async (session: MeditationSession) => {
+    console.log('瞑想セッション完了:', session);
+    
+    try {
+      // Save session to local storage
+      addMeditationSession(session);
+      
+      // Update session count for anonymous user prompt
+      setSessionCount(prev => prev + 1);
+      
+      // Update user statistics if authenticated
+      if (user && !isAnonymous && profile) {
+        const newStats = calculateStatistics();
+        await updateStatistics(newStats);
+      }
+    } catch (error) {
+      console.error('Failed to save session:', error);
+    }
+  };
+
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume);
+  };
+
+  const handleToggleMute = () => {
+    setAudioEnabled(!audioEnabled);
   };
 
   if (isLoading) {
@@ -78,89 +123,72 @@ export default function MeditationPage() {
   }
 
   return (
-    <div className="flex-1 px-4 py-8">
-      <div className="max-w-6xl mx-auto">
-        {showScriptSelector ? (
-          <div className="space-y-8">
-            {/* ヘッダー */}
-            <div className="text-center space-y-4">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
-                瞑想スクリプトを選択
-              </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                あなたの今の気分や目的に合わせて、最適な瞑想スクリプトを選んでください。
-              </p>
-            </div>
+    <>
+      <div className="flex-1 px-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          {showScriptSelector ? (
+            <div className="space-y-8">
+              {/* ヘッダー */}
+              <div className="text-center space-y-4">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+                  瞑想スクリプトを選択
+                </h1>
+                <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                  あなたの今の気分や目的に合わせて、最適な瞑想スクリプトを選んでください。
+                </p>
+              </div>
 
-            {/* 現在選択されているスクリプト */}
-            {selectedScriptData && (
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100">
-                      選択中: {selectedScriptData.title}
-                    </h3>
-                    <p className="text-blue-700 dark:text-blue-300">
-                      {selectedScriptData.description}
-                    </p>
-                    <p className="text-sm text-blue-600 dark:text-blue-400">
-                      時間: {Math.floor(selectedScriptData.duration / 60)}分
-                      {selectedScriptData.duration % 60 > 0 ? `${selectedScriptData.duration % 60}秒` : ''}
-                    </p>
+              {/* 現在選択されているスクリプト */}
+              {selectedScriptData && (
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100">
+                        選択中: {selectedScriptData.title}
+                      </h3>
+                      <p className="text-blue-700 dark:text-blue-300">
+                        {selectedScriptData.description}
+                      </p>
+                      <p className="text-sm text-blue-600 dark:text-blue-400">
+                        時間: {Math.floor(selectedScriptData.duration / 60)}分
+                        {selectedScriptData.duration % 60 > 0 ? `${selectedScriptData.duration % 60}秒` : ''}
+                      </p>
+                    </div>
+                    <button
+                      onClick={handleStartMeditation}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-lg hover:shadow-xl"
+                    >
+                      瞑想を開始
+                    </button>
                   </div>
-                  <button
-                    onClick={handleStartMeditation}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors shadow-lg hover:shadow-xl"
-                  >
-                    瞑想を開始
-                  </button>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* スクリプト選択コンポーネント */}
-            <ScriptSelector
-              scripts={scripts}
-              selectedScript={selectedScript}
-              onScriptChange={handleScriptChange}
-              onPreview={handlePreview}
-              showPreview={true}
+              {/* スクリプト選択コンポーネント */}
+              <ScriptSelector
+                scripts={scripts}
+                selectedScript={selectedScript}
+                onScriptChange={handleScriptChange}
+                onPreview={handlePreview}
+                showPreview={true}
+              />
+            </div>
+          ) : selectedScriptData ? (
+            <MeditationSessionController
+              script={selectedScriptData}
+              volume={volume}
+              audioEnabled={audioEnabled}
+              onSessionComplete={handleSessionComplete}
+              onExit={handleBackToSelection}
+              onVolumeChange={handleVolumeChange}
+              onToggleMute={handleToggleMute}
             />
-          </div>
-        ) : (
-          <div className="text-center space-y-6">
-            <div className="space-y-4">
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                瞑想セッション
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300">
-                {selectedScriptData?.title} - {Math.floor((selectedScriptData?.duration || 0) / 60)}分間の瞑想
-              </p>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 border border-gray-200 dark:border-gray-700 max-w-2xl mx-auto">
-              <p className="text-gray-500 dark:text-gray-400 mb-6">
-                瞑想タイマーコンポーネントがここに表示されます
-                <br />
-                （次のタスクで実装予定）
-              </p>
-              
-              <div className="space-y-4">
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors">
-                  瞑想を開始
-                </button>
-                
-                <button
-                  onClick={handleBackToSelection}
-                  className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 font-medium py-3 px-8 rounded-lg transition-colors"
-                >
-                  スクリプトを変更
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+          ) : null}
+        </div>
       </div>
-    </div>
+
+      {/* Anonymous User Prompt */}
+      <AnonymousUserPrompt sessionCount={sessionCount} />
+    </>
   );
 }

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ThemeToggle } from './ThemeToggle';
 import { Navigation } from './Navigation';
 import { MobileMenuButton } from './MobileMenuButton';
+import { UserMenu } from './UserMenu';
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -30,6 +31,7 @@ export function Header() {
 
           {/* Right side controls */}
           <div className="flex items-center space-x-4">
+            <UserMenu />
             <ThemeToggle />
             
             {/* Mobile menu button */}
