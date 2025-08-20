@@ -78,6 +78,7 @@ export const OptimizedImage = ({
       <div 
         className={`flex items-center justify-center bg-gray-200 dark:bg-gray-700 ${className}`}
         style={{ width, height }}
+        data-testid="error-placeholder"
       >
         <svg 
           className="w-8 h-8 text-gray-400" 
