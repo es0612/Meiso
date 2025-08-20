@@ -260,6 +260,7 @@ export const MeditationTimer = ({
               whileTap={{ scale: 0.95 }}
               aria-label="瞑想タイマーを開始"
               aria-describedby="timer-controls-help"
+              data-testid="start-timer-button"
             >
               開始
             </motion.button>

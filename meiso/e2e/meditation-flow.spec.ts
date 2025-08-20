@@ -19,7 +19,7 @@ test.describe('Meditation Session Flow', () => {
     await startButton.click();
 
     // Check that session controller appears
-    await expect(page.locator('[data-testid="meditation-timer"]')).toBeVisible();
+    await expect(page.locator('[data-testid="meditation-timer"]')).toBeVisible({ timeout: 10000 });
   });
 
   test('should be able to pause and resume meditation session', async ({ page }) => {

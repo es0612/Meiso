@@ -19,7 +19,7 @@ const mockUseMeditationHistory = useMeditationHistory as jest.MockedFunction<typ
 
 // Mock constants
 jest.mock('@/constants/meditation', () => ({
-  MEDITATION_SCRIPTS: [
+  INITIAL_MEDITATION_SCRIPTS: [
     {
       id: 'basic-breathing',
       title: '基本の呼吸瞑想',

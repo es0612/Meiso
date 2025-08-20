@@ -65,13 +65,19 @@ export default function HistoryPage() {
           </div>
         </div>
 
-        {viewMode === 'list' ? (
-          <MeditationHistory onSessionClick={handleSessionClick} />
-        ) : (
-          <MeditationCalendar 
-            onDateClick={handleDateClick}
-          />
-        )}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
+            {viewMode === 'list' ? '詳細データ' : 'カレンダービュー'}
+          </h2>
+          
+          {viewMode === 'list' ? (
+            <MeditationHistory onSessionClick={handleSessionClick} />
+          ) : (
+            <MeditationCalendar 
+              onDateClick={handleDateClick}
+            />
+          )}
+        </div>
 
         <SessionDetailModal
           session={selectedSession}

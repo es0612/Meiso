@@ -63,7 +63,7 @@ export function MeditationHistory({ onSessionClick }: MeditationHistoryProps) {
 
   // スクリプト名を取得
   const getScriptName = (scriptId: string) => {
-    const script = INITIAL_MEDITATION_SCRIPTS.find(s => s.id === scriptId);
+    const script = INITIAL_MEDITATION_SCRIPTS?.find(s => s.id === scriptId);
     return script?.title || scriptId;
   };
 
@@ -85,43 +85,50 @@ export function MeditationHistory({ onSessionClick }: MeditationHistoryProps) {
 
   return (
     <div className="space-y-6">
-      {/* 統計カード */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* 統計セクション */}
+      <div className="space-y-4">
+        <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
+          瞑想統計
+        </h3>
+        
+        {/* 統計カード */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
             総セッション数
-          </h3>
+          </h4>
           <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
             {stats.totalSessions}
           </p>
         </div>
         
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
             連続日数
-          </h3>
+          </h4>
           <p className="text-2xl font-bold text-green-600 dark:text-green-400">
             {stats.currentStreak}日
           </p>
         </div>
         
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
             総時間
-          </h3>
+          </h4>
           <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
             {formatSessionDuration(stats.totalDuration)}
           </p>
         </div>
         
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+          <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
             完了率
-          </h3>
+          </h4>
           <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
             {Math.round(stats.completionRate * 100)}%
           </p>
         </div>
+      </div>
       </div>
 
       {/* フィルターとビューモード */}
@@ -148,9 +155,10 @@ export function MeditationHistory({ onSessionClick }: MeditationHistoryProps) {
               value={filters.scriptId || ''}
               onChange={(e) => setFilters(prev => ({ ...prev, scriptId: e.target.value || undefined }))}
               className="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+              aria-label="スクリプトでフィルタ"
             >
               <option value="">全てのスクリプト</option>
-              {INITIAL_MEDITATION_SCRIPTS.map(script => (
+              {INITIAL_MEDITATION_SCRIPTS?.map(script => (
                 <option key={script.id} value={script.id}>
                   {script.title}
                 </option>
@@ -163,6 +171,7 @@ export function MeditationHistory({ onSessionClick }: MeditationHistoryProps) {
                 completed: e.target.value === '' ? undefined : e.target.value === 'true'
               }))}
               className="px-3 py-1 text-sm rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+              aria-label="完了状態でフィルタ"
             >
               <option value="">全ての状態</option>
               <option value="true">完了済み</option>
@@ -202,9 +211,9 @@ export function MeditationHistory({ onSessionClick }: MeditationHistoryProps) {
       {/* セッション一覧 */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
         <div className="p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
             瞑想セッション履歴 ({filteredSessions.length}件)
-          </h2>
+          </h3>
           
           {filteredSessions.length === 0 ? (
             <p className="text-gray-500 dark:text-gray-400 text-center py-8">
@@ -214,7 +223,7 @@ export function MeditationHistory({ onSessionClick }: MeditationHistoryProps) {
               }
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-3" data-testid="session-history">
               {filteredSessions.map((session) => (
                 <div
                   key={session.id}

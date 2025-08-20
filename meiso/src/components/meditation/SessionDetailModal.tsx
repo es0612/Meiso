@@ -28,7 +28,7 @@ export function SessionDetailModal({
 
   if (!isOpen || !session) return null;
 
-  const script = INITIAL_MEDITATION_SCRIPTS.find(s => s.id === session.scriptId);
+  const script = INITIAL_MEDITATION_SCRIPTS?.find(s => s.id === session.scriptId);
 
   const handleUpdate = async () => {
     if (!onUpdate) return;

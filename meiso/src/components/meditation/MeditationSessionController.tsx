@@ -95,6 +95,7 @@ export const MeditationSessionController = ({
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative"
+          data-testid="meditation-timer"
         >
           {/* 円形プログレスバー */}
           <svg
@@ -250,6 +251,7 @@ export const MeditationSessionController = ({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label="瞑想セッションを一時停止"
+                data-testid="pause-button"
               >
                 一時停止
               </motion.button>
@@ -266,6 +268,7 @@ export const MeditationSessionController = ({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label="瞑想セッションを再開"
+                data-testid="resume-button"
               >
                 再開
               </motion.button>
@@ -296,6 +299,7 @@ export const MeditationSessionController = ({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               aria-label="瞑想セッションを終了"
+              data-testid="stop-button"
             >
               終了
             </motion.button>

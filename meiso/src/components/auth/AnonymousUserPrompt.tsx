@@ -44,7 +44,7 @@ export function AnonymousUserPrompt({ sessionCount = 0, onDismiss }: AnonymousUs
 
   return (
     <>
-      <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-40">
+      <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-40" data-testid="anonymous-user-prompt">
         <div className="flex justify-between items-start mb-3">
           <div className="flex-1">
             <h3 className="text-sm font-semibold text-gray-900 mb-1">

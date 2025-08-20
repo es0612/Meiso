@@ -1,7 +1,24 @@
+// Mock constants first
+jest.mock('@/constants/meditation', () => ({
+  INITIAL_MEDITATION_SCRIPTS: [
+    {
+      id: 'basic-breathing',
+      title: '基本の呼吸瞑想',
+      description: 'シンプルな呼吸に集中する瞑想',
+      category: 'breathing',
+      duration: 60,
+      instructions: [],
+      tags: ['初心者向け'],
+      difficulty: 'beginner',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+  ]
+}));
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MeditationHistory } from '../MeditationHistory';
 import { useMeditationHistory } from '@/hooks/useMeditationHistory';
-import { MEDITATION_SCRIPTS } from '@/constants/meditation';
 
 // Mock the hook
 jest.mock('@/hooks/useMeditationHistory');

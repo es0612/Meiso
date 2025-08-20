@@ -30,13 +30,11 @@ jest.useFakeTimers();
 describe('MeditationTimer', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.clearAllTimers();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
     jest.useRealTimers();
-    jest.useFakeTimers();
   });
 
   const renderTimer = (duration = 60) => {
@@ -80,7 +78,7 @@ describe('MeditationTimer', () => {
     it('開始ボタンをクリックするとタイマーが開始される', async () => {
       renderTimer(5);
       
-      const startButton = screen.getByRole('button', { name: '開始' });
+      const startButton = screen.getByTestId('start-timer-button');
       fireEvent.click(startButton);
 
       await waitFor(() => {
@@ -95,7 +93,7 @@ describe('MeditationTimer', () => {
     it('タイマーが正しくカウントダウンする', async () => {
       renderTimer(5);
       
-      const startButton = screen.getByRole('button', { name: '開始' });
+      const startButton = screen.getByTestId('start-timer-button');
       fireEvent.click(startButton);
 
       // 1秒経過
@@ -120,7 +118,7 @@ describe('MeditationTimer', () => {
     it('タイマーが完了するとonCompleteが呼ばれる', async () => {
       renderTimer(2);
       
-      const startButton = screen.getByRole('button', { name: '開始' });
+      const startButton = screen.getByTestId('start-timer-button');
       fireEvent.click(startButton);
 
       // 2秒経過してタイマー完了
@@ -141,7 +139,7 @@ describe('MeditationTimer', () => {
       renderTimer(10);
       
       // タイマー開始
-      const startButton = screen.getByRole('button', { name: '開始' });
+      const startButton = screen.getByTestId('start-timer-button');
       fireEvent.click(startButton);
 
       // 一時停止ボタンが表示されるまで待機
@@ -173,7 +171,7 @@ describe('MeditationTimer', () => {
       renderTimer(10);
       
       // タイマー開始
-      const startButton = screen.getByRole('button', { name: '開始' });
+      const startButton = screen.getByTestId('start-timer-button');
       fireEvent.click(startButton);
 
       // 一時停止ボタンが表示されるまで待機
@@ -207,7 +205,7 @@ describe('MeditationTimer', () => {
       renderTimer(10);
       
       // タイマー開始
-      const startButton = screen.getByRole('button', { name: '開始' });
+      const startButton = screen.getByTestId('start-timer-button');
       fireEvent.click(startButton);
 
       // 3秒経過
@@ -228,7 +226,7 @@ describe('MeditationTimer', () => {
       renderTimer(1);
       
       // タイマー開始
-      const startButton = screen.getByRole('button', { name: '開始' });
+      const startButton = screen.getByTestId('start-timer-button');
       fireEvent.click(startButton);
 
       // 1秒経過してタイマー完了
@@ -323,7 +321,7 @@ describe('MeditationTimer', () => {
       renderTimer(4);
       
       // タイマー開始
-      const startButton = screen.getByRole('button', { name: '開始' });
+      const startButton = screen.getByTestId('start-timer-button');
       fireEvent.click(startButton);
 
       // 2秒経過（50%進行）
@@ -341,7 +339,7 @@ describe('MeditationTimer', () => {
     it('ボタンにフォーカスが当たる', () => {
       renderTimer();
       
-      const startButton = screen.getByRole('button', { name: '開始' });
+      const startButton = screen.getByTestId('start-timer-button');
       startButton.focus();
       
       expect(startButton).toHaveFocus();

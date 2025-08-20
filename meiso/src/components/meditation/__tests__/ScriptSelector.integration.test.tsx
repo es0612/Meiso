@@ -1,18 +1,11 @@
+// Set up environment variables
+process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test.supabase.co'
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
+
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useMeditationScripts } from '@/hooks/useMeditationScripts';
 import { ScriptSelector } from '@/components/meditation';
 import { INITIAL_MEDITATION_SCRIPTS, DEFAULT_SCRIPT_ID } from '@/constants/meditation';
-import { expect } from '@jest/globals';
-import { expect } from '@jest/globals';
-import { it } from 'zod/locales';
-import { expect } from '@jest/globals';
-import { it } from 'zod/locales';
-import { expect } from '@jest/globals';
-import { it } from 'zod/locales';
-import { expect } from '@jest/globals';
-import { expect } from '@jest/globals';
-import { expect } from '@jest/globals';
-import { expect } from '@jest/globals';
 import { expect } from '@jest/globals';
 import { it } from 'zod/locales';
 import { describe } from '@jest/globals';

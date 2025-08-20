@@ -35,14 +35,34 @@ declare global {
 }
 global.gtag = jest.fn();
 
-// Mock window and document
-Object.defineProperty(global, 'window', {
-  value: {
-    matchMedia: jest.fn(() => ({ matches: false })),
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
+// Mock window properties
+const mockWindow = {
+  matchMedia: jest.fn(() => ({ matches: false })),
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+  dispatchEvent: jest.fn(),
+  location: { href: 'http://localhost' },
+  performance: {
+    mark: jest.fn(),
+    measure: jest.fn(),
+    getEntriesByType: jest.fn(() => []),
+    getEntriesByName: jest.fn(() => []),
+    navigation: { type: 0 },
+    timing: {
+      navigationStart: 0,
+      loadEventEnd: 1000,
+      domContentLoadedEventEnd: 500,
+    },
   },
+};
+
+// Apply window mocks
+Object.keys(mockWindow).forEach(key => {
+  Object.defineProperty(window, key, {
+    value: mockWindow[key as keyof typeof mockWindow],
+    writable: true,
+    configurable: true,
+  });
 });
 
 Object.defineProperty(global, 'document', {

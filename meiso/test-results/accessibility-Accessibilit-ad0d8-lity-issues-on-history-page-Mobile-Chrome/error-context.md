@@ -1,0 +1,55 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - link "瞑想":
+    - /url: /
+  - button "ユーザーメニュー":
+    - text: ユ
+    - img
+  - button "ダークモードに切り替え":
+    - img
+  - button "メニューを開く":
+    - img
+- main:
+  - heading "瞑想履歴" [level=1]
+  - button "リスト表示"
+  - button "カレンダー表示"
+  - heading "瞑想統計" [level=2]
+  - heading "総セッション数" [level=4]
+  - paragraph: "0"
+  - heading "連続日数" [level=4]
+  - paragraph: 0日
+  - heading "総時間" [level=4]
+  - paragraph: 0秒
+  - heading "完了率" [level=4]
+  - paragraph: 0%
+  - button "過去7日"
+  - button "過去30日"
+  - combobox "スクリプトでフィルタ":
+    - option "全てのスクリプト" [selected]
+    - option "基本の呼吸瞑想"
+    - option "マインドフルネス集中"
+    - option "ストレス解消"
+    - option "集中力向上"
+  - combobox "完了状態でフィルタ":
+    - option "全ての状態" [selected]
+    - option "完了済み"
+    - option "未完了"
+  - button "リスト"
+  - button "カレンダー"
+  - heading "瞑想セッション履歴 (0件)" [level=2]
+  - paragraph: まだ瞑想セッションがありません。最初の瞑想を始めてみましょう！
+- contentinfo:
+  - text: 瞑想
+  - paragraph: 忙しいビジネスマンのための1分間瞑想
+  - link "プライバシーポリシー":
+    - /url: /privacy
+  - link "利用規約":
+    - /url: /terms
+  - link "お問い合わせ":
+    - /url: /contact
+  - text: © 2025 瞑想. All rights reserved.
+- button "Clear Cache"
+- alert
+```
