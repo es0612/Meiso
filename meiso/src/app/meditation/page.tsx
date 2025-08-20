@@ -1,13 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { ScriptSelector, MeditationSessionController } from '@/components/meditation';
-import { AnonymousUserPrompt } from '@/components/auth';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useMeditationScripts } from '@/hooks/useMeditationScripts';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { addMeditationSession, calculateStatistics } from '@/utils/localStorage';
 import { MeditationScript, MeditationSession } from '@/types';
+
+// Lazy load heavy components
+const ScriptSelector = lazy(() => 
+  import('@/components/meditation').then(module => ({
+    default: module.ScriptSelector
+  }))
+);
+
+const MeditationSessionController = lazy(() => 
+  import('@/components/meditation').then(module => ({
+    default: module.MeditationSessionController
+  }))
+);
+
+const AnonymousUserPrompt = lazy(() => 
+  import('@/components/auth').then(module => ({
+    default: module.AnonymousUserPrompt
+  }))
+);
 
 export default function MeditationPage() {
   const {
@@ -165,30 +182,49 @@ export default function MeditationPage() {
               )}
 
               {/* スクリプト選択コンポーネント */}
-              <ScriptSelector
-                scripts={scripts}
-                selectedScript={selectedScript}
-                onScriptChange={handleScriptChange}
-                onPreview={handlePreview}
-                showPreview={true}
-              />
+              <Suspense fallback={
+                <div className="flex justify-center py-8">
+                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              }>
+                <ScriptSelector
+                  scripts={scripts}
+                  selectedScript={selectedScript}
+                  onScriptChange={handleScriptChange}
+                  onPreview={handlePreview}
+                  showPreview={true}
+                />
+              </Suspense>
             </div>
           ) : selectedScriptData ? (
-            <MeditationSessionController
-              script={selectedScriptData}
-              volume={volume}
-              audioEnabled={audioEnabled}
-              onSessionComplete={handleSessionComplete}
-              onExit={handleBackToSelection}
-              onVolumeChange={handleVolumeChange}
-              onToggleMute={handleToggleMute}
-            />
+            <Suspense fallback={
+              <div className="flex-1 flex flex-col items-center justify-center px-4 py-16">
+                <div className="text-center space-y-4">
+                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    瞑想セッションを準備しています...
+                  </p>
+                </div>
+              </div>
+            }>
+              <MeditationSessionController
+                script={selectedScriptData}
+                volume={volume}
+                audioEnabled={audioEnabled}
+                onSessionComplete={handleSessionComplete}
+                onExit={handleBackToSelection}
+                onVolumeChange={handleVolumeChange}
+                onToggleMute={handleToggleMute}
+              />
+            </Suspense>
           ) : null}
         </div>
       </div>
 
       {/* Anonymous User Prompt */}
-      <AnonymousUserPrompt sessionCount={sessionCount} />
+      <Suspense fallback={null}>
+        <AnonymousUserPrompt sessionCount={sessionCount} />
+      </Suspense>
     </>
   );
 }

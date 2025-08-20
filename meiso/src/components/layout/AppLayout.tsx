@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { PWAInitializer } from './PWAInitializer';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -16,6 +17,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         {children}
       </main>
       <Footer />
+      <PWAInitializer />
     </div>
   );
 }
