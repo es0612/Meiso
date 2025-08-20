@@ -5,3 +5,4 @@ export { MeditationSessionController } from './MeditationSessionController';
 export { MeditationHistory } from './MeditationHistory';
 export { MeditationCalendar } from './MeditationCalendar';
 export { SessionDetailModal } from './SessionDetailModal';
+export { VisualGuidance, VisualGuidancePreview } from './VisualGuidance';

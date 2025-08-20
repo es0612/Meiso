@@ -176,6 +176,8 @@ export const MeditationTimer = ({
           height="280"
           className="transform -rotate-90"
           viewBox="0 0 280 280"
+          role="img"
+          aria-label={`瞑想タイマー: 残り${formatTime(timerState.timeRemaining)}`}
         >
           {/* 背景の円 */}
           <circle
@@ -214,11 +216,18 @@ export const MeditationTimer = ({
             initial={{ scale: 1.1, opacity: 0.8 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
+            role="timer"
+            aria-live="polite"
+            aria-atomic="true"
           >
             {formatTime(timerState.timeRemaining)}
           </motion.div>
           
-          <div className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          <div 
+            className="text-sm text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+            role="status"
+            aria-live="polite"
+          >
             {timerState.isCompleted ? '完了' : 
              timerState.isPaused ? '一時停止中' : 
              timerState.isRunning ? '瞑想中' : '準備完了'}
@@ -237,7 +246,7 @@ export const MeditationTimer = ({
       </div>
 
       {/* コントロールボタン */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4" role="group" aria-label="瞑想タイマーコントロール">
         <AnimatePresence mode="wait">
           {!timerState.isRunning && !timerState.isPaused && !timerState.isCompleted && (
             <motion.button
@@ -249,6 +258,8 @@ export const MeditationTimer = ({
               exit={{ opacity: 0, scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-label="瞑想タイマーを開始"
+              aria-describedby="timer-controls-help"
             >
               開始
             </motion.button>
@@ -264,6 +275,8 @@ export const MeditationTimer = ({
               exit={{ opacity: 0, scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-label="瞑想タイマーを一時停止"
+              aria-describedby="timer-controls-help"
             >
               一時停止
             </motion.button>
@@ -279,6 +292,8 @@ export const MeditationTimer = ({
               exit={{ opacity: 0, scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-label="瞑想タイマーを再開"
+              aria-describedby="timer-controls-help"
             >
               再開
             </motion.button>
@@ -294,6 +309,8 @@ export const MeditationTimer = ({
               exit={{ opacity: 0, scale: 0.9 }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              aria-label="瞑想タイマーをリセットしてもう一度開始"
+              aria-describedby="timer-controls-help"
             >
               もう一度
             </motion.button>
@@ -307,6 +324,7 @@ export const MeditationTimer = ({
             className="px-6 py-3 bg-slate-300 hover:bg-slate-400 text-slate-700 rounded-full font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:ring-offset-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            aria-label="瞑想タイマーをリセット"
           >
             リセット
           </motion.button>
@@ -314,9 +332,14 @@ export const MeditationTimer = ({
       </div>
 
       {/* キーボードショートカットヒント */}
-      <div className="mt-8 text-xs text-slate-400 dark:text-slate-500 text-center">
-        <p>スペースキー: 開始/一時停止/再開</p>
-        <p>Escapeキー: リセット</p>
+      <div 
+        id="timer-controls-help" 
+        className="mt-8 text-xs text-slate-400 dark:text-slate-500 text-center"
+        role="region"
+        aria-label="キーボードショートカット"
+      >
+        <p><kbd className="px-1 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-slate-700 dark:text-slate-300">スペース</kbd>: 開始/一時停止/再開</p>
+        <p><kbd className="px-1 py-0.5 bg-slate-200 dark:bg-slate-700 rounded text-slate-700 dark:text-slate-300">Escape</kbd>: リセット</p>
       </div>
     </div>
   );
