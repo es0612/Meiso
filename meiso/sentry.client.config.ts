@@ -26,7 +26,7 @@ Sentry.init({
     }),
   ],
   
-  beforeSend(event: any, hint: any) {
+  beforeSend(event: any, hint: { originalException?: Error }) {
     // Filter out specific errors we don't want to track
     if (event.exception) {
       const error = hint.originalException;

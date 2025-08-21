@@ -130,7 +130,7 @@ export function trackMeditationPerformance(sessionData: {
 /**
  * Track user errors for monitoring
  */
-export function trackError(error: Error, context?: Record<string, any>) {
+export function trackError(error: Error, context?: Record<string, unknown>) {
   // Send to Sentry
   if (typeof window !== 'undefined' && window.Sentry) {
     window.Sentry.captureException(error, {
@@ -198,7 +198,7 @@ export function initializePerformanceObserver() {
 // Global type extensions
 declare global {
   interface Window {
-    va?: (event: string, name: string, data?: Record<string, any>) => void;
-    Sentry?: any;
+    va?: (event: string, name: string, data?: Record<string, unknown>) => void;
+    Sentry?: unknown;
   }
 }

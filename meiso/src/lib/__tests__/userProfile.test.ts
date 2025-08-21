@@ -29,7 +29,30 @@ const mockSupabaseClient = {
 }
 
 jest.mock('../supabase', () => ({
-  supabase: mockSupabaseClient
+  supabase: {
+    from: jest.fn(() => ({
+      select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          single: jest.fn()
+        }))
+      })),
+      insert: jest.fn(() => ({
+        select: jest.fn(() => ({
+          single: jest.fn()
+        }))
+      })),
+      update: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          select: jest.fn(() => ({
+            single: jest.fn()
+          }))
+        }))
+      })),
+      delete: jest.fn(() => ({
+        eq: jest.fn()
+      }))
+    }))
+  }
 }))
 
 // Mock localStorage utilities
@@ -54,7 +77,7 @@ jest.mock('@/utils/localStorage', () => ({
 
 import { UserProfileService } from '../userProfile'
 import { DEFAULT_USER_PREFERENCES } from '@/utils/localStorage'
-import type { UserProfile, UserPreferences, UserStatistics, MeditationSession } from '@/types'
+import type { UserProfile, UserStatistics } from '@/types'
 
 const DEFAULT_USER_PREFERENCES = {
   audioEnabled: true,

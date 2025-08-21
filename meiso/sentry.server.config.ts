@@ -11,7 +11,7 @@ Sentry.init({
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: process.env.NODE_ENV === 'development',
   
-  beforeSend(event: any, hint: any) {
+  beforeSend(event: any, hint: { originalException?: Error }) {
     // Filter out specific errors we don't want to track
     if (event.exception) {
       const error = hint.originalException;

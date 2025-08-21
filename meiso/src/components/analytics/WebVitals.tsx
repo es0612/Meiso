@@ -1,16 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { sendToAnalytics } from '@/lib/monitoring';
-
-interface WebVitalsMetric {
-  id: string;
-  name: string;
-  value: number;
-  rating: 'good' | 'needs-improvement' | 'poor';
-  delta: number;
-  entries: PerformanceEntry[];
-}
+import { sendToAnalytics, type WebVitalsMetric } from '@/lib/monitoring';
 
 export function WebVitals() {
   useEffect(() => {

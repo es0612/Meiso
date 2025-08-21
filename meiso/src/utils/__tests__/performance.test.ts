@@ -56,13 +56,15 @@ const mockWindow = {
   },
 };
 
-// Apply window mocks
+// Apply window mocks (skip location as it's already defined in jest.setup.js)
 Object.keys(mockWindow).forEach(key => {
-  Object.defineProperty(window, key, {
-    value: mockWindow[key as keyof typeof mockWindow],
-    writable: true,
-    configurable: true,
-  });
+  if (key !== 'location') {
+    Object.defineProperty(window, key, {
+      value: mockWindow[key as keyof typeof mockWindow],
+      writable: true,
+      configurable: true,
+    });
+  }
 });
 
 Object.defineProperty(global, 'document', {

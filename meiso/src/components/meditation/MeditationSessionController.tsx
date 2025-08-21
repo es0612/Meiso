@@ -7,7 +7,6 @@ import { useMeditationSession } from '@/hooks/useMeditationSession';
 import { MeditationLayout } from '@/components/layout/MeditationLayout';
 import { VisualGuidance } from '@/components/meditation/VisualGuidance';
 import { ErrorMessage } from '@/components/ui/ErrorMessage';
-import { trackMeditationPerformance } from '@/lib/monitoring';
 
 interface MeditationSessionControllerProps {
   script: MeditationScript;
