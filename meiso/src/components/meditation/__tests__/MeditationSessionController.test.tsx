@@ -142,7 +142,7 @@ describe('MeditationSessionController', () => {
 
     render(<MeditationSessionController {...defaultProps} />);
 
-    expect(screen.getByRole('button', { name: '完了' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '瞑想セッションを完了して終了' })).toBeInTheDocument();
   });
 
   it('時間が正しくフォーマットされて表示される', () => {
@@ -201,7 +201,7 @@ describe('MeditationSessionController', () => {
   it('ミュートボタンが機能する', () => {
     render(<MeditationSessionController {...defaultProps} />);
 
-    const muteButton = screen.getByTitle('音声をオフ');
+    const muteButton = screen.getByLabelText('音声をオフにする');
     fireEvent.click(muteButton);
 
     expect(mockUseMeditationSession.audioController.toggleMute).toHaveBeenCalled();
@@ -233,7 +233,7 @@ describe('MeditationSessionController', () => {
 
     render(<MeditationSessionController {...defaultProps} />);
 
-    expect(screen.getByText('音声エラー: テストエラー')).toBeInTheDocument();
+    expect(screen.getByText('テストエラー')).toBeInTheDocument();
   });
 
   afterEach(() => {

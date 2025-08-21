@@ -4,6 +4,8 @@ import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { WebVitals } from '@/components/analytics/WebVitals';
+import { VercelAnalytics } from '@/components/analytics/VercelAnalytics';
 import Script from 'next/script';
 
 const geistSans = Geist({
@@ -133,6 +135,8 @@ export default function RootLayout({
             <AppLayout>
               {children}
             </AppLayout>
+            <WebVitals />
+            <VercelAnalytics />
           </AuthProvider>
         </ThemeProvider>
         

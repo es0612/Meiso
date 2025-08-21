@@ -158,7 +158,7 @@ describe('MeditationSessionController Integration', () => {
     expect(onVolumeChange).toHaveBeenCalledWith(0.5);
 
     // ミュートボタンの操作
-    const muteButton = screen.getByTitle('音声をオフ');
+    const muteButton = screen.getByLabelText('音声をオフにする');
     fireEvent.click(muteButton);
 
     expect(onToggleMute).toHaveBeenCalled();

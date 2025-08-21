@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { MeditationScript, MeditationSession } from '@/types';
 import { useAudioController } from '@/components/audio/AudioController';
+import { trackMeditationPerformance } from '@/lib/monitoring';
 
 interface SessionState {
   isActive: boolean;
@@ -142,6 +143,14 @@ export const useMeditationSession = ({
           screenSize: `${window.screen.width}x${window.screen.height}`,
         },
       };
+
+      // パフォーマンス追跡
+      trackMeditationPerformance({
+        duration: timeElapsed,
+        scriptId: script.id,
+        completed: true,
+        loadTime: actualStartTimeRef.current ? Date.now() - actualStartTimeRef.current : undefined,
+      });
 
       onSessionComplete(session);
     }
@@ -328,6 +337,14 @@ export const useMeditationSession = ({
           screenSize: `${window.screen.width}x${window.screen.height}`,
         },
       };
+
+      // パフォーマンス追跡（未完了セッション）
+      trackMeditationPerformance({
+        duration: timeElapsed,
+        scriptId: script.id,
+        completed: false,
+        loadTime: actualStartTimeRef.current ? Date.now() - actualStartTimeRef.current : undefined,
+      });
 
       onSessionComplete(session);
     }
